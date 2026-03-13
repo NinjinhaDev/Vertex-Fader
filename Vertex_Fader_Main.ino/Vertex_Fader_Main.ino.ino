@@ -1,11 +1,22 @@
 /*
- * ===================================================================================
- * Project:       Vertex Fader (Controlador MIDI ESP32-S3)
- * Author:        Marlon
- * Date:          March / 2026
+ * ____________________________________________________________________
+ * |                                                                    |
+ * |    _    __             _              _____           _            |
+ * |   | |  / /            | |            |  ___|         | |           |
+ * |   | | / /  ___  _ __  | |_  ___ __  _| |_  __ _   __| |  ___ _ __  |
+ * |   | |/ /  / _ \| '__| | __|/ _ \\ \/ /  _|/ _` | / _` | / _ \ '__| |
+ * |   |   /  |  __/| |    | |_|  __/ >  <| | | (_| || (_| ||  __/ |    |
+ * |   |__/    \___||_|     \__|\___|/_/\_\_|  \__,_| \__,_| \___|_|    |
+ * |                                                                    |
+ * |                                                                    |
+ * |____________________________________________________________________|
+ *
+ * Project:       Vertex Fader (MIDI Control Surface)
+ * Author:        Marlon (Ninjinha)
  * Repository:    https://github.com/NinjinhaDev/Vertex-Fader
  * Version:       1.0.0
- * * Description: 
+ * Hardware:      ESP32-S3 | PCA9685 | MCP23017 | CD4051
+ * Description:   Mackie MCU Protocol via USB-MIDI, BLE and RTP-MIDI.
  * Arquivo principal (Maestro) do controlador MIDI Vertex.
  * Integra a pilha de comunicação (USB Nativo + BLE MIDI), o servidor Web/OTA
  * e a lógica de hardware para Faders Motorizados, Botões e Encoders.
