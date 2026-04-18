@@ -1,23 +1,75 @@
-# 🎚️ Vertex Fader
-**High-Precision Motorized Fader Controller for DAWs**
+# Vertex Fader
 
-O **Vertex Fader** é um projeto de controladora MIDI construída com uma arquitetura de processamento duplo, projetada para oferecer a mesma precisão, suavidade e velocidade de consoles de áudio profissionais. 
+Controlador MIDI com faders motorizados em arquitetura distribuida, inspirado em superfícies como Waves Fit e Behringer X-Touch.
 
----
+## Visao geral
 
-## 🧠 Arquitetura de Processamento Duplo
-Para garantir zero latência (*jitter*) e movimentos limpos, o projeto divide as tarefas complexas e elétricas em dois processadores separados que conversam entre si a incríveis **1 Megabaud**:
+O projeto usa dois microcontroladores trabalhando juntos:
 
-* **O Cérebro (ESP32):** Gerencia a inteligência. Conversa com a DAW via USB, processa o protocolo *Mackie MCU*, gerencia o estado dos botões/encoders e calcula a física de aceleração matemática dos motores.
-* **O Músculo (RP2040):** O "Co-processador Robótico". Roda 100% focado na geração de sinais PWM de altíssima frequência (25kHz), garantindo que os motores tenham torque e operem de forma absolutamente silenciosa, sem apitos eletrônicos.
+- `ESP32-S3`: USB MIDI, touch capacitivo, botoes, encoders e comunicacao com a DAW.
+- `RP2040`: leitura fisica dos faders, malha fechada dos motores e feedback rapido por UART.
 
-## ✨ Recursos Principais (v1.3)
+Essa separacao deixa o MIDI e a interface no ESP32 enquanto o RP2040 fica dedicado ao movimento dos faders.
 
-* 🤖 **Controle Proporcional de Distância (PID):** Faders não dão "trancos". A velocidade é calculada em tempo real com base na distância do alvo. O motor arranca com força máxima e aplica um "freio ABS" milímetros antes de chegar ao destino.
-* 🕺 **Fader Dance (Auto-Calibração):** A cada inicialização, o sistema bate nos extremos da placa para mapear os limites físicos reais dos faders, compensando automaticamente o desgaste natural das trilhas de carbono.
-* 🎛️ **Integração Nativa Mackie MCU:** Reconhecido automaticamente pelo REAPER (e outras DAWs principais) de forma "Plug and Play".
-* 👆 **Touch-to-Select (Smart Focus):** Tocar na parte metálica do fader corta a energia do motor instantaneamente e aciona a seleção automática do canal na DAW, garantindo que o seu equalizador/plugin esteja sempre focado na trilha correta sem precisar de cliques extras.
-* 🔄 **Modos Avançados (FLIP e EQ):** Suporte nativo aos Assignment Buttons da Mackie para inverter funções de faders com encoders e mapear plugins dinamicamente.
+## Recursos atuais
 
----
-*Desenvolvido com foco em agilidade de estúdio e mixagem ao vivo.*
+- 8 faders motorizados com feedback por UART
+- Touch capacitivo com `MPR121`
+- 8 encoders via `MCP23017`
+- 8 botoes via `MCP23017`
+- Protocolo baseado em Mackie Control
+- Projeto organizado para `PlatformIO`
+
+## Estrutura do repositorio
+
+```text
+.
+|-- include/
+|   |-- Button.h
+|   |-- Encoder.h
+|   |-- Fader.h
+|   |-- Mackie.h
+|   |-- Touch.h
+|   `-- USBDeviceConnection.h
+|-- src/
+|   |-- VertexFader.cpp
+|   `-- Slave.cpp
+`-- platformio.ini
+```
+
+## Ambientes PlatformIO
+
+O repositorio tem dois ambientes:
+
+- `esp32s3`: firmware principal
+- `rp2040`: firmware escravo dos motores
+
+## Como compilar
+
+```bash
+pio run -e esp32s3
+pio run -e rp2040
+```
+
+## Como gravar
+
+Exemplos:
+
+```bash
+pio run -e esp32s3 -t upload
+pio run -e rp2040 -t upload
+```
+
+## Observacoes
+
+- A comunicacao entre os processadores usa UART em `1000000 baud`.
+- O `ESP32-S3` envia e recebe MIDI por USB.
+- O `RP2040` concentra a resposta fisica dos faders para reduzir latencia e ruido de controle.
+
+## Estado do projeto
+
+Esta versao substitui a estrutura antiga baseada em pastas `.ino` por uma organizacao moderna em `PlatformIO`, facilitando manutencao, build e evolucao do firmware.
+
+## Autor
+
+Desenvolvido por Marlon Rodrigues.
